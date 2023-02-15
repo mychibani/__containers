@@ -1,0 +1,34 @@
+Vector est une sequence de containers representant un tableau qui peut changer de taille.
+
+Comme un tableau, Vector utilise la contiguite de la memoire pour y stocker des elements, ce qui signifie que l'on peut y acceder en utiliser des pointeurs normaux sur ses elements.
+et aussii efficace qu'un tableau. Mais contrairement aux tableaux, la taille du Vector peut varier, avec le stockage automatiquement gere par le container.
+
+Vector utilise un tableau dynamiquement alloue pour y stocker ses elements. ce tableau peut etre reealloue si la capacite demander est plus importante. ce que implique qu'il faut cree un nouveau Vector avec une taille plus importante
+et y deplacer tout les elements stocke precedement, ce que Vector reeelement fait dans ce cas la, c'est de, lors de la reallocation, alloue plus de memoire que demander, ce qui permet de rajouter des elements, et d'anticiper un potentiel reajout de donnees.
+l'implementaton de cette strategie differe selon les librairies. mais en general Vector alloue de maniere logarithmique croissante, afin que l'insertion d'elements rajouter a la fin du vector, puisse etre assure avec une complexite temporelle constante amortie
+
+de toute facon, compare aux tableaux, vector consomme plus de ressources pour pouvoir stocke des donnees de maniere efficace
+
+En general, vector est tres utile pour cree de maniere fixe un tableau et pour rajouter des elements. mais pour ce qui est de rajouter des elements ou d'en supprimer autre part que par la fin,
+vector montre ses limites et d'autres types de stockage de donnees seront plus approprie.
+
+
+Propriete du container :
+
+_ sequence
+		Chaque elements est accessible par sa position dans la sequence
+_ dinamique
+		Autorise Les acces direct a n'importe quel elements faisant partie de sa sequence
+_ Allocator-aware
+		Utilise un object (Alloc), qui gere l'allocation de memoire et les besoins d'espace demande 
+
+
+Parametre du Template :
+			[T]
+				Si T est garantie de ne pas throw d'exception lors du deplacement. l'implementaton peut optimisier
+				le deplacement des elements, plutot que de les deplacer durant la reallocation.
+				Alias du membre : vector::value_type.
+
+			[Alloc]
+				type de l'object d'allocation utilise pour definir le modele d'allocation utilise. Par default, l'Allocator class template est utiliser, et qui corespond
+				au model d'allocation le plus simple et qui est valeur independant.
