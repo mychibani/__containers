@@ -1,14 +1,15 @@
 #include <iostream>
 #include <vector>
+#include "Vector.hpp"
 
 int	main(void)
 {
-	std::cout << "Hello World !" << std::endl;
+	ft::vector<int> test;
+	std::vector<int> test2;
 
-	std::vector<int> tableau(4, 10);
-	for (size_t i = 0; i < tableau.size(); ++i)
-		std::cout << tableau[i] << std::endl;
-	
-	for (std::vector<int>::size_type i = 0; i < tableau.size(); ++i)
-		std::cout << tableau[i] << std::endl;
+	ft::vector<int> tmp(5);
+
+	std::cout << "size ft::vector = " << test.size() << std::endl;
+	std::cout << "size std::vector = " << test2.size() << std::endl;
+
 }
