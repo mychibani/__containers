@@ -34,6 +34,7 @@ namespace ft
 			typedef Allocator allocator_type;
 			typedef typename Allocator::pointer pointer;
 			typedef typename Allocator::const_pointer const_pointer;
+			typedef pointer iterator;
 		// typedef std::reverse_iterator<iterator> reverse_iterator;
 		// typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
@@ -43,30 +44,60 @@ namespace ft
 		/*													 */
 		/*---------------------------------------------------*/
 
-		explicit vector(const Allocator & tmp = Allocator()) : __size(0), 
-		{};
+		explicit vector(const Allocator & alloc = Allocator()) : __size(0), __value(0), __capacity(0), __allocator(alloc)
+		{
+		};
 
 		explicit vector(size_type n, const T &value = T(),
-						const Allocator & = Allocator()) {
-							(void)n;(void)value;
-						};
+									const Allocator & alloc = Allocator()) : __size(n), __value(0), __capacity(n), __allocator(alloc)
+		{
+			std::cout << "Fill Constructor Called" << std::endl;
+			// construct
+			reserve(n);
+			assign(n, value);
+		};
 		
 		// template <class InputIterator>
 		// vector(InputIterator first, InputIterator last,
 		// 	   const Allocator & = Allocator());
 		// vector(const vector<T, Allocator> &x);
-		~vector() {};
-
-
+		~vector()
+		{
+			delete __value;
+		};
 		vector<T, Allocator> &operator=(const vector<T, Allocator> &x);
 		template <class InputIterator>
-		void assign(InputIterator first, InputIterator last);
-		void assign(size_type n, const T &u);
-		allocator_type get_allocator() const;
+		void assign(InputIterator first, InputIterator last)
+		{
+			(void) first;
+			(void) last;
+		};
+		void assign(size_type n, const T &u)
+		{
+			size_type	i;
+
+			i = 0;
+			while (i < n)
+			{
+				__allocator.construct(&__value[i], u);
+				i++;
+			}
+		};
+		allocator_type get_allocator() const
+		{
+			return (__allocator);
+		};
+
 		// iterators:
-		// iterator begin();
+		iterator begin()
+		{
+			return (&__value[0]);
+		};
 		// const_iterator begin() const;
-		// iterator end();
+		iterator end()
+		{
+			return (&__value[__size]);
+		};
 		// const_iterator end() const;
 		// reverse_iterator rbegin();
 		// const_reverse_iterator rbegin() const;
@@ -82,11 +113,29 @@ namespace ft
 		size_type size() const {
 			return (__size);
 		};
-		size_type max_size() const;
+
+		size_type max_size() const
+		{
+			return (__allocator.max_size());
+		};
+
 		void resize(size_type sz, T c = T());
-		size_type capacity() const;
+
+		size_type capacity() const
+		{
+			return (__capacity);
+		};
 		bool empty() const;
-		void reserve(size_type n);
+
+		void reserve(size_type n)
+		{
+			if (n > max_size())
+				throw std::length_error("vector::reserve");
+			if (!n)
+				__value = __allocator.allocate(1);
+			else
+				__value = __allocator.allocate(n);
+		};
 
 		/*---------------------------------------------------*/
 		/*													 */
