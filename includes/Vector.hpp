@@ -14,14 +14,13 @@ namespace ft
 	template <class T, class Allocator = std::allocator<T> >
 	class vector
 	{
-	public:
+		public:
 
 		/*---------------------------------------------------*/
 		/*													 */
 		/*					Typenames						 */
 		/*													 */
 		/*---------------------------------------------------*/
-
 			typedef size_t	size_type;
 			typedef typename Allocator::reference reference;
 			typedef typename Allocator::const_reference const_reference;
@@ -45,32 +44,37 @@ namespace ft
 		/*---------------------------------------------------*/
 
 		explicit vector(const Allocator & alloc = Allocator()) : __size(0), __value(0), __capacity(0), __allocator(alloc)
-		{
-		};
+		{};
 
 		explicit vector(size_type n, const T &value = T(),
 									const Allocator & alloc = Allocator()) : __size(n), __value(0), __capacity(n), __allocator(alloc)
 		{
-			std::cout << "Fill Constructor Called" << std::endl;
-			// construct
 			reserve(n);
 			assign(n, value);
 		};
-		
-		// template <class InputIterator>
-		// vector(InputIterator first, InputIterator last,
-		// 	   const Allocator & = Allocator());
-		// vector(const vector<T, Allocator> &x);
+
+		/*				Besoin d'Input Iterator
+		template <class InputIterator>
+
+		vector(InputIterator first, InputIterator last,
+			   const Allocator & = Allocator());
+		{
+
+		}*/
+
+		vector(const vector<T, Allocator> &x);
+
 		~vector()
 		{
-			delete __value;
+			clear();
+			__allocator.deallocate(__value);
 		};
 		vector<T, Allocator> &operator=(const vector<T, Allocator> &x);
 		template <class InputIterator>
 		void assign(InputIterator first, InputIterator last)
 		{
-			(void) first;
-			(void) last;
+			(void)first;
+			(void)last;
 		};
 		void assign(size_type n, const T &u)
 		{
@@ -125,16 +129,19 @@ namespace ft
 		{
 			return (__capacity);
 		};
-		bool empty() const;
+		bool empty() const ;
 
 		void reserve(size_type n)
 		{
+			value_type	*new_tab;
+
 			if (n > max_size())
 				throw std::length_error("vector::reserve");
-			if (!n)
-				__value = __allocator.allocate(1);
-			else
-				__value = __allocator.allocate(n);
+			if (n <= __capacity)
+				return ;
+			new_tab = __allocator.allocate(n);
+			__capacity = n;
+			__value = new_tab;
 		};
 
 		/*---------------------------------------------------*/
@@ -160,15 +167,46 @@ namespace ft
 
 		void push_back(const T &x);
 		void pop_back();
-		// iterator insert(iterator position, const T &x);
-		// void insert(iterator position, size_type n, const T &x);
-		// template <class InputIterator>
-		// void insert(iterator position,
-		// 			InputIterator first, InputIterator last);
-		// iterator erase(iterator position);
-		// iterator erase(iterator first, iterator last);
+		// iterator insert(iterator position, const T &x)
+		// {
+			
+		// };
+		// void insert(iterator position, size_type n, const T &x)
+		// {
+
+		// };
+		template <class InputIterator>
+		void insert(iterator position,
+					InputIterator first, InputIterator last)
+		{
+			size_type new_size = std::distance(last - first) + __size;
+			size_type tmp = position - __value;
+			size_type *copy = __value;
+			if (new_size > __capacity)
+			{
+				if (__capacity * 2 > new_size)
+					reserve(__capacity);
+				else
+					reserve (new_size);
+			}
+			position = __value + tmp;
+			for (iterator it = __size; it > position; it--)
+			{
+				__alloc.construct(__value[])
+			}
+			
+		};
+		iterator erase(iterator position);
+		iterator erase(iterator first, iterator last);
 		void swap(vector<T, Allocator> &);
-		void clear();
+		void clear()
+		{
+			size_type i;
+			
+			for (i = 0; i < __size; i++);
+				__allocator.destroy(__value[i]);
+			__size = 0;
+		}
 
 		/*---------------------------------------------------*/
 		/*													 */

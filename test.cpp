@@ -58,26 +58,37 @@ int main()
 
 	for (int i = 0; i < 100; i++)
 		test.push_back(i);
-
-
-	v.push_back(1);
-	it = v.begin();
-	v.insert(it + 1, test.begin(), test.end());
- 
+	
+    std::cout << "addr: " << &v << '\n';
+	v.reserve(10);
+	v.assign(10, 5);
+    std::cout << "addr: " << &v << '\n';
+	v.insert(v.begin(), 4);
     auto cap = v.capacity();
+	v.reserve(1111111111);
+    std::cout << "addr: " << &v << '\n';
+	for (it = v.begin(); it != v.end(); it++)
+		std::cout << *it << std::endl;
     std::cout << "Initial size: " << v.size() << ", capacity: " << cap << '\n';
+    std::cout << "addr: " << &v << '\n';
+	// v.push_back(1);
+	// it = v.begin();
+	// v.insert(it + 1, test.begin(), test.end());
  
-    std::cout << "\nDemonstrate the capacity's growth policy."
-                 "\nSize:  Capacity:  Ratio:\n" << std::left;
-    while (sz-- > 0) {
-        // v.push_back(sz);
-        if (cap != v.capacity()) {
-            std::cout << std::setw( 7) << v.size()
-                      << std::setw(11) << v.capacity()
-                      << std::setw(10) << v.capacity() / static_cast<float>(cap) << '\n';
-            cap = v.capacity();
-        }
-    }
  
-    std::cout << "\nFinal size: " << v.size() << ", capacity: " << v.capacity() << '\n';
+    // std::cout << "\nDemonstrate the capacity's growth policy."
+    //              "\nSize:  Capacity:  Ratio:\n" << std::left;
+    // while (sz-- > 0) {
+    //     // v.push_back(sz);
+    //     if (cap != v.capacity()) {
+    //         std::cout << std::setw( 7) << v.size()
+    //                   << std::setw(11) << v.capacity()
+    //                   << std::setw(10) << v.capacity() / static_cast<float>(cap) << '\n';
+    //         cap = v.capacity();
+    //     }
+    // }
+    // std::cout << "\nFinal size: " << v.size() << ", capacity: " << v.capacity() << '\n';
+
+
+
 }

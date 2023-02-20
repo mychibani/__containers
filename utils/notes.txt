@@ -32,3 +32,31 @@ Parametre du Template :
 			[Alloc]
 				type de l'object d'allocation utilise pour definir le modele d'allocation utilise. Par default, l'Allocator class template est utiliser, et qui corespond
 				au model d'allocation le plus simple et qui est valeur independant.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[0,1] <- 2 3 4
+[ , , , , , ]
+[0,1, , , , ]
