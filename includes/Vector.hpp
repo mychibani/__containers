@@ -2,6 +2,7 @@
 #define VECTOR_HPP
 
 #include <iostream>
+#include <cstdlib>
 
 /*
 **						As a reminder, you have to comply with the C++98 standard, so any later feature of
@@ -50,7 +51,8 @@ namespace ft
 									const Allocator & alloc = Allocator()) : __size(n), __value(0), __capacity(n), __allocator(alloc)
 		{
 			reserve(n);
-			assign(n, value);
+			__value[0] = value;
+			// assign(n, value);
 		};
 
 		/*				Besoin d'Input Iterator
@@ -67,14 +69,14 @@ namespace ft
 		~vector()
 		{
 			clear();
-			__allocator.deallocate(__value);
+			__allocator.deallocate(__value, 0);
 		};
 		vector<T, Allocator> &operator=(const vector<T, Allocator> &x);
 		template <class InputIterator>
 		void assign(InputIterator first, InputIterator last)
 		{
-			(void)first;
 			(void)last;
+			iterator temp = first;
 		};
 		void assign(size_type n, const T &u)
 		{
@@ -129,8 +131,27 @@ namespace ft
 		{
 			return (__capacity);
 		};
-		bool empty() const ;
-
+		bool empty() const
+		{
+			return (begin() == end());
+		};
+ 	/**
+       *  @brief  Attempt to preallocate enough memory for specified number of
+       *          elements.
+       *  @param  __n  Number of elements required.
+       *  @throw  std::length_error  If @a n exceeds @c max_size().
+       *
+       *  This function attempts to reserve enough memory for the
+       *  %vector to hold the specified number of elements.  If the
+       *  number requested is more than max_size(), length_error is
+       *  thrown.
+       *
+       *  The advantage of this function is that if optimal code is a
+       *  necessity and the user can determine the number of elements
+       *  that will be required, the user can reserve the memory in
+       *  %advance, and thus prevent a possible reallocation of memory
+       *  and copying of %vector data.
+    */
 		void reserve(size_type n)
 		{
 			value_type	*new_tab;
@@ -139,9 +160,18 @@ namespace ft
 				throw std::length_error("vector::reserve");
 			if (n <= __capacity)
 				return ;
-			new_tab = __allocator.allocate(n);
-			__capacity = n;
-			__value = new_tab;
+			else
+			{
+				// const size_type __old_size = size();
+				// new_tab = get_allocator().allocate(n);
+
+				// __size = __ + __old_size;
+				// __attr_dealloc()
+				// get_allocator().deallocate(__value, __size);
+				// new_tab = __allocator.allocate(n);
+				// __value = new_tab;
+				__capacity = n;
+			}
 		};
 
 		/*---------------------------------------------------*/
@@ -179,9 +209,8 @@ namespace ft
 		void insert(iterator position,
 					InputIterator first, InputIterator last)
 		{
-			size_type new_size = std::distance(last - first) + __size;
+			size_type new_size = std::distance(first, last) + __size;
 			size_type tmp = position - __value;
-			size_type *copy = __value;
 			if (new_size > __capacity)
 			{
 				if (__capacity * 2 > new_size)
@@ -190,12 +219,14 @@ namespace ft
 					reserve (new_size);
 			}
 			position = __value + tmp;
-			for (iterator it = __size; it > position; it--)
-			{
-				__alloc.construct(__value[])
-			}
-			
+			iterator i = __value + new_size;
+
+			for (; i > position; i--)
+				__allocator.construct(i, i - std::distance(first, last));
+			for (;i > position - std::distance(first, last); i--)
+				__allocator.construct(i, i);
 		};
+
 		iterator erase(iterator position);
 		iterator erase(iterator first, iterator last);
 		void swap(vector<T, Allocator> &);
@@ -203,8 +234,8 @@ namespace ft
 		{
 			size_type i;
 			
-			for (i = 0; i < __size; i++);
-				__allocator.destroy(__value[i]);
+			for (i = 0; i < __size; i++)
+				__allocator.destroy(&__value[i]);
 			__size = 0;
 		}
 
