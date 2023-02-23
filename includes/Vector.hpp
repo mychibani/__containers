@@ -48,11 +48,11 @@ namespace ft
 		{};
 
 		explicit vector(size_type n, const T &value = T(),
-									const Allocator & alloc = Allocator()) : __size(n), __value(0), __capacity(n), __allocator(alloc)
+									const Allocator & alloc = Allocator()) : __size(0), __value(0), __capacity(0), __allocator(alloc)
 		{
 			reserve(n);
-			__value[0] = value;
-			// assign(n, value);
+			std::cout << __capacity << std::endl;
+			assign(n, value);
 		};
 
 		/*				Besoin d'Input Iterator
@@ -75,19 +75,13 @@ namespace ft
 		template <class InputIterator>
 		void assign(InputIterator first, InputIterator last)
 		{
-			(void)last;
-			iterator temp = first;
+			clear();
+			insert(begin(), first, last);
 		};
 		void assign(size_type n, const T &u)
 		{
-			size_type	i;
-
-			i = 0;
-			while (i < n)
-			{
-				__allocator.construct(&__value[i], u);
-				i++;
-			}
+			clear();
+			insert(begin(), n, u);
 		};
 		allocator_type get_allocator() const
 		{
@@ -155,6 +149,7 @@ namespace ft
 		void reserve(size_type n)
 		{
 			value_type	*new_tab;
+			
 
 			if (n > max_size())
 				throw std::length_error("vector::reserve");
@@ -162,16 +157,17 @@ namespace ft
 				return ;
 			else
 			{
-				// const size_type __old_size = size();
-				// new_tab = get_allocator().allocate(n);
-
-				// __size = __ + __old_size;
-				// __attr_dealloc()
-				// get_allocator().deallocate(__value, __size);
-				// new_tab = __allocator.allocate(n);
-				// __value = new_tab;
-				__capacity = n;
+				new_tab = __allocator.allocate(n);
+				for (size_type i = 0; i < __size; i++)
+				{
+					__allocator.construct(new_tab + i, *(__value + i));
+					__allocator.destroy(__value + i);
+				}
+				if (__value || __capacity)
+					__allocator.deallocate(__value, sizeof(value_type) * __capacity);
 			}
+			__capacity = n;
+			__value = new_tab;
 		};
 
 		/*---------------------------------------------------*/
@@ -197,14 +193,33 @@ namespace ft
 
 		void push_back(const T &x);
 		void pop_back();
-		// iterator insert(iterator position, const T &x)
-		// {
+		iterator insert(iterator position, const T &x)
+		{
+			insert(position, )	
+		};
+		void insert(iterator position, size_type n, const T &x)
+		{
+			size_type new_size = n + __size;
+			size_type tmp = position - __value;
+			if (new_size > __capacity)
+			{
+				if (__capacity * 2 > new_size)
+					reserve(__capacity);
+				else
+					reserve (new_size);
+			}
+			position = __value + tmp;
+			iterator i = __value + new_size;
 			
-		// };
-		// void insert(iterator position, size_type n, const T &x)
-		// {
-
-		// };
+			for (; i > position; i--)
+			{
+				__allocator.construct(i, i - std::distance(first, last));
+				__allocator.destroy(i);
+			}
+			for (;i > position - std::distance(first, last); i--)
+				__allocator.construct(i, last--);
+			__size += 1;
+		};
 		template <class InputIterator>
 		void insert(iterator position,
 					InputIterator first, InputIterator last)
@@ -220,11 +235,15 @@ namespace ft
 			}
 			position = __value + tmp;
 			iterator i = __value + new_size;
-
+			
 			for (; i > position; i--)
+			{
 				__allocator.construct(i, i - std::distance(first, last));
+				__allocator.destroy(i);
+			}
 			for (;i > position - std::distance(first, last); i--)
-				__allocator.construct(i, i);
+				__allocator.construct(i, last--);
+			__size += 1;
 		};
 
 		iterator erase(iterator position);

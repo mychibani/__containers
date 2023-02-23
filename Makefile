@@ -12,7 +12,7 @@ INCS 		:= 		-I $(INCS_DIR)
 
 CC 			:=		c++
 
-CPPFLAGS 	:= 		-Wall -Wextra -Werror -std=c++98
+CPPFLAGS 	:= 		-Wall -Wextra -Werror -std=c++98 -fsanitize=address -g3
 
 OBJS 		:= 		${SRCS:.cpp=.o}
 
